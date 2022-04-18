@@ -1,0 +1,33 @@
+---
+title: "Overview"
+author: "Sai Vishal", "Yaoting Yao" and "Zeyu Zhang"
+date: "2022-04-18"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ENclass3)
+```
+
+Summary: A brief (up to 250 words) description of the project, and a bullet point or enumerated list of its primary objectives.
+
+Approach and Method: An outline of the analytical methods and code you plan to use, including the names of key packages that you will draw on. This section should be composed of the following sub-sections:
+
+Data: A brief (~250 words) description and visualization of the datasets you will be using. That means spatial plots of the main datasets and their key values, and, as a bonus, a plot of summary statistics, e.g. a histogram or boxplot of one of the more importants variables in the dataset.
+
+Code: A bullet point summary of the analysis and coding approach that you propose to follow. For teams, this section should include a description of which member will be responsible for each bullet point.
+  
+Timelines: Provide a timeline for when each portion of the analysis will be completed. These timelines should be constructed relative to the time period of presentations (during the last two weeks of class) and final project submission (during exam week). For teams, names should be associated with each step on the timeline.
+
+Anticipated outcomes: Briefly describe, as bullet points, the outcomes you expect for each of your primary project objectives
