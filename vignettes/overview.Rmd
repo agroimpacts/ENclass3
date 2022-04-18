@@ -1,7 +1,7 @@
 ---
 title: "overview"
-author: "Sai Vishal", "Yaoting Yao" and "Zeyu Zhang"
-date: "2022-04-18"
+author: "Sai Vishal, Yaoting Yao and Zeyu Zhang"
+date: "2022-4-18"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{overview}
@@ -20,3 +20,4 @@ knitr::opts_chunk$set(
 library(ENclass3)
 ```
 
+'ENclass3' is the package for Geospatial Analysis with R final project. In this package, we will create Class 3 labels, identify the highest likelihood predictions and Update the Random Forests’ model in Ejura-Tain and Northern Ghana region.
