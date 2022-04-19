@@ -21,3 +21,52 @@ library(ENclass3)
 ```
 
 'ENclass3' is the package for Geospatial Analysis with R final project. In this package, we will create Class 3 labels, identify the highest likelihood predictions and Update the Random Forests’ model in Ejura-Tain and Northern Ghana region.
+
+1. Summary: 
+
+This project will use Sentinel 1, Sentinel 2, and PlanetScope time series imagery to develop Class 3 labels within Ejura-Tain and Northern Ghana regions. We will use the Random Forest model to predict an initial round of training data and develop Class 3 labels. We will work on the following steps to develop Class 3 labels:
+
+(1) Complete the image time series:Collecting the missing Sentinel-1 and 2 data from January to December 2021, and PlanetScope basemap imagery from the same imagery
+
+(2) (Re)train the Random Forests’ model with Class 1 labels and run predictions: We will create predictor stacks to process training and reference data set. Train model and run predictions for 2021. In the end, update mosaicking and masking of RF probabilities.
+
+(3) Identify the highest likelihood predictions for each crop type:  Create high probability predicted crop type maps, identify clusters and convert to vectors.
+
+
+2. Approach and Method: 
+
+(1) Data:We have partial downloads Sentinel 1, Sentinel 2, and PlanetScope time series for each region. However, some regions are missing some data.
+  - Ejura-Tain: Collecting the missing Sentinel-1 and 2 data from 
+    January to December 2021, and PlanetScope basemap imagery from 
+    the same imagery
+  - Northern Ghana: Collecting January-December, 2021 imagery. 
+
+(2) Code
+  -Create predictor stacks (Vishal)
+  -Extract predictor values (Vishal)
+  -Process training and reference data set (Vishal)
+  -Train model (Yao-Ting)
+  -Predict  (Yao-Ting)
+  -Mosaic predictions (Yao-Ting)
+  -Use a high probability threshold for each crop (0.5), and create X    layers of high probability predicted crop type maps–each map is a    binary (0, 1). (Zeyu)
+  -Identify clusters of cells greater than size (say 20 cells).   
+   Convert thresholded maps into individual objects, filtering out 
+   smaller objects. (Zeyu)
+  -Convert that to vectors, using the package function 
+   polygonize_labels.R. (Zeyu)
+  -Examine each retained cluster against PlanetScope imagery from the    same date. (Zeyu)
+
+(3)Timelines
+  -April 18 - April 24: Download data and create time-series images     (Vishal)
+  -April 25 - May 1: Train Random Forest model and Run predictions      (Yao-Ting)
+  -May 2 - May 8: Identify the highest likelihood predictions for    
+   each crop type (Zeyu)
+  -May 9 - May 15: Make presentations, and submit our project
+
+(4)Anticipated outcomes
+  -Random Forests’ model and predictions:We will train the Random   
+   Forests’ Model using Class 1 labels, and get predictions of the 
+   crop field.
+  -Class 3 labels:Based on the predictions, we will delete the 
+   invalid predictions, and keep the valid predictions as Class 3 
+   labels.
