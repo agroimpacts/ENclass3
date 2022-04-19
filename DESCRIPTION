@@ -1,7 +1,7 @@
 Package: ENclass3
 Title: GEOG246-346 final project 
 Version: 0.0.1
-Authors@R: person("Yao-Ting", "Yao", email = "leannayao@gmail.com", role = c("aut", "cre"))
+Authors@R: c(person("Yao-Ting", "Yao", email = "yayao@clarku.edu", role = c("aut", "cre")),person("Sai Vishal", "Muda", email = "SMuda@clarku.edu", role = c("aut", "cre")),person("Zeyu", "Zhang", email = "ZeyZhang@clarku.edu", role = c("aut", "cre")))
 Maintainer: Yao-Ting Yao<leannayao@gmail.com>
 Description: Package for GEOG246-346 final project 
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a

@@ -1,6 +1,6 @@
 ---
 title: "overview"
-author: "Sai Vishal, Yaoting Yao and Zeyu Zhang"
+author: "Sai Vishal Muda, Yaoting Yao and Zeyu Zhang"
 date: "2022-4-18"
 output: rmarkdown::html_vignette
 vignette: >
