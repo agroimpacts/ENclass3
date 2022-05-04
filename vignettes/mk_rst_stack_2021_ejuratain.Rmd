@@ -1,0 +1,23 @@
+---
+title: "mk_rst_stack_2021_ejtain"
+author: "Vishal"
+date: "5/4/2022"
+output: html_document
+---
+
+s3 bucket to access
+
+```{r, echo=FALSE}
+
+# s3 bucket
+bucket <- 'activemapper'
+s3path <- 'ecaas_2021/RasterStack_All'
+
+```
+
+```{r}
+
+
+```
+
+
