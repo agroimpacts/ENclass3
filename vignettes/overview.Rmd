@@ -22,23 +22,27 @@ library(ENclass3)
 
 'ENclass3' is the package for Geospatial Analysis with R final project. In this package, we will create Class 3 labels, identify the highest likelihood predictions and Update the Random Forests’ model in Ejura-Tain and Northern Ghana region.
 
-# 1. Summary: 
+# 1. Summary 
 
 #    This project is a subproject from Enabling Crop Analytics at Scale project which aim to improve and expand crop type mapping by updating the approach used for training and testing the Random Forests-based mapping. In our project, we develop a third class of synthetic labels based on predictions from an initial version of Random Forests. After initial training of the model with a training sample consisting of Class 1  labels(crop type polygons collected in fields) and Class 2 labels(crop type polygons classified in UAS imagery), we will assess model performance against the reserved validation sample, and then apply the trained model to map class probabilities across the expanded mapping region. For each crop, we will identify contiguous clusters of pixels where the predicted probabilities exceed 0.7 or the upper 90% percentile probability value, and convert these into new training labels, providing a third class of labels. We will then test whether adding batches (by decreasing order of confidence) of these Class 3 labels to the initial training pool improves model performance. We will retain the subset of Class 3 labels that lead to the largest gains.
 
-#     We will work on the following steps to develop Class 3 labels:
+# 2. Methods
+
+##   We work on the following steps to develop Class 3 labels:
 
 ##   (1) Complete the image time series:Collecting the missing Sentinel-1 and 2 data from January to December 2021, and PlanetScope basemap imagery from the same imagery
 
-##   (2) (Re)train the Random Forests’ model with Class 1 labels and run predictions: 
+##   (2) (Re)train the Random Forests’ model with Class 1 labels and run predictions with following steps: 
 
-###   Extract predictor values: We create predictor stacks by combing class 1 (sghana_field.geojson) and class 3 label of Maize. Retrain the model and extract the predict value from Raster under each polygon for 2021 data. (process_train_ref_set_y2.R)
+###  (2-1) Create predictor stacks: Create a bucket 'activemapper' for PlanetScope catogory (B G R NIR Alpha), Sentinel1_harmonic catalogs and sentinel2 band groups. Make sentinel stacks in nicfi tiles.  Create S1, S2, and Planet stack. (mk_rst_stack_en_2021.R)
 
-###   Process training and reference data set: Create folder set predicter and extract value from sentinel 2 data. Calculate predictor for Maize. Produce a csv for all predictor. (process_train_ref_set_y2.R)
+###  (2-2) Extract predictor values: We create predictor stacks by combing class 1 (sghana_field.geojson) and class 3 label of Maize. Retrain the model and extract the predict value from Raster under each polygon for 2021 data. ( generate_dataset_en_2021.R)
 
-###   Train model: We use year 2 model to train and evaluate. Break at 0.01 decrease in accuracy. Count how many times variables appeared across the 4 sets. Final model will be just one of these four datasets. Reduced model performs better. (rf_model_all.R)
+###  (2-3) Process training and reference data set: Create folder set predicter and extract value from sentinel 2 data. Calculate predictor for Maize and Rice. Produce a csv for all predictor. (process_train_ref_set_y2_en.R)
 
-###   Predict: Run predictions for one tile in 2021 to see if accuracy of prediction improve. 
+###  (2-4) Train model: We use year 2 model to train and evaluate. Break at 0.01 decrease in accuracy. Count how many times variables appeared across the 4 sets. Final model will be just one of these four datasets. Reduced model performs better. (rf_model_all.R)
+
+###   (2-5) Predict: Run predictions for one tile in 2021 to see if accuracy of prediction improve. (rf_prediction_2021.R)
 
 # 2. Data:
 
@@ -48,14 +52,10 @@ library(ENclass3)
 
 ##   Northern Ghana: Collecting January-December, 2021 imagery. 
 
-
 # 3. Code
 
 ## Create predictor stacks (Vishal)
-## Extract predictor values (Zeyu and Vishal)
-## Process training and reference data set (Yao-Ting)
-## Train model (Zeyu and Yao-Ting)
-## Predict  (Zeyu and Yao-Ting)
-
-
-
+## Extract predictor values (All)
+## Process training and reference data set (All)
+## Train model (All)
+## Predict  (All)
