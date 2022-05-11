@@ -1,11 +1,20 @@
 ---
 title: "Results"
-author: "Vishal"
+author: "Sai Vishal Muda, Yaoting Yao and Zeyu Zhang"
 date: "5/8/2022"
-output: html_document
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+#    We use reference data set to train and test year 2 model and use ggplot to create Random Forest variable importance plots. Mean decrease accuracy is the measure of the performance of the model without each variable. A higher value indicates the less importance of that variable in predicting crop land type. Removal of that value causes the model to increase accuracy in prediction. The result Figures shows in Data folder (VarImp_RF1, VarImp_RF2_reduced, VarImp_RF3_reduced2, VarImp_seed10, VarImp_seed20, VarImp_seed30 and VarImp_seed40)
+
+#    The first run of Random Forest (VarImp_RF1) shows a clear break at 0.01. We use this value to reduced variables and retrain the model for twice (VarImp_RF2_reduced and VarImp_RF3_reduced2). Split Ratio for split train and test date is 0.8.  The reduced model performs better model accuracy, 0.6890928(RF2) and 0.7067961(RF3). 
+
+#    Top 10 important variables are VV_4(Sentinel-1 harmonic Single co-polarization Red band), VH_4(Sentinel-1 harmonic Dual-band cross-polarization Red band), VV_3 (Sentinel-1 harmonic Single co-polarization Green band), VH_3(Sentinel-1 harmonic Dual-band cross-polarization Green band), VV_5(Sentinel-1 harmonic Single co-polarization NIR band), VV_2(Sentinel-1 harmonic Single co-polarization Blue band), VV_6(Sentinel-1 harmonic Single co-polarization NIR band),  NDVI_1(Sentinal2(B8_1 - B4_1) / (B8_1 + B4_1)), RG2_GCVI_1 ((B8_1 / (B6_1 + 0.00001)) - 1)and RG2_NDVI_1((B8_1 - B6_1) / (B8_1 + B6_1)).
