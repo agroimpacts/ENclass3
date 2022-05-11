@@ -30,11 +30,11 @@ library(ENclass3)
 
 ##   We work on the following steps to develop Class 3 labels:
 
-##   (1) Complete the image time series:Collecting the missing Sentinel-1 and 2 data from January to December 2021, and PlanetScope basemap imagery from the same imagery
+##   (1) Complete the image time series:Collecting the missing Sentinel-1 and 2 data from January to December 2021, and PlanetScope basemap imagery from the same imagery (check_sentinel1level3_catalog.R)
 
 ##   (2) (Re)train the Random Forests’ model with Class 1 labels and run predictions with following steps: 
 
-###  (2-1) Create predictor stacks: Create a bucket 'activemapper' for PlanetScope catogory (B G R NIR Alpha), Sentinel1_harmonic catalogs and sentinel2 band groups. Make sentinel stacks in nicfi tiles.  Create S1, S2, and Planet stack. (mk_rst_stack_en_2021.R)
+###  (2-1) Create predictor stacks: Create a bucket 'activemapper' for PlanetScope catogory (B G R NIR Alpha), Sentinel1_harmonic catalogs and sentinel2 band groups. Make sentinel stacks in nicfi tiles.  Create S1, S2, and Planet stack. (mk_rst_stack_2021_ejuratain.R)
 
 ###  (2-2) Extract predictor values: We create predictor stacks by combing class 1 (sghana_field.geojson) and class 3 label of Maize. Retrain the model and extract the predict value from Raster under each polygon for 2021 data. ( generate_dataset_en_2021.R)
 
