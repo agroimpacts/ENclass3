@@ -1,0 +1,56 @@
+========================================================================= 
+Log Path: /home/rstudio/projects/ENclass3/extdata/log/rfl_2021_2.log 
+Program Path: /home/rstudio/projects/ENclass3/R/rf_prediction_en_2021.R 
+Working Directory: /home/rstudio/projects/ENclass3 
+User Name: rstudio 
+R Version: 4.0.2 (2020-06-22) 
+Machine: ip-172-31-64-45 x86_64 
+Operating System: Linux 5.4.0-1072-aws #77~18.04.1-Ubuntu SMP Thu Apr 7 21:38:47 UTC 2022 
+[1] "Base Packages: parallel stats graphics grDevices utils datasets methods\n               base \nOther Packages: logr_1.3.0 patchwork_1.1.1 randomForest_4.6-12 caTools_1.18.2 aws.ec2metadata_0.2.0\n                terra_1.5-21 glue_1.4.1 forcats_0.5.0 stringr_1.4.0 purrr_0.3.4\n                readr_1.3.1 tidyr_1.1.1 tibble_3.0.3 ggplot2_3.3.2 tidyverse_1.3.0\n                dplyr_1.0.1 aws.s3_0.3.21 sf_1.0-7 "
+Log Start Time: 2022-05-11 20:20:31 
+========================================================================= 
+
+[1] "Error in h(simpleError(msg, call)) : \n  error in evaluating the argument 'x' in selecting a method for function 'plot': object 'pred_stack' not found\n"
+Traceback: 
+ [1] "6: evalVis(expr)"                                                                   
+ [2] "5: capture.output(traceback(5, max.lines = 1000))"                                  
+ [3] "4: (function () "                                                                   
+ [4] "   {"                                                                               
+ [5] "       er <- geterrmessage()"                                                       
+ [6] "       tb <- capture.output(traceback(5, max.lines = 1000))"                        
+ [7] "       log_print(er, hide_notes = TRUE, blank_after = FALSE)"                       
+ [8] "       log_print(\"Traceback:\", hide_notes = TRUE, blank_after = FALSE)"           
+ [9] "       log_print(tb)"                                                               
+[10] "       log_quiet(er, msg = TRUE, blank_after = FALSE)"                              
+[11] "       log_quiet(\"Traceback:\", msg = TRUE, blank_after = FALSE)"                  
+[12] "       log_quiet(tb, msg = TRUE)"                                                   
+[13] "   })()"                                                                            
+[14] "3: h(simpleError(msg, call))"                                                       
+[15] "2: .handleSimpleError(function (cond) "                                             
+[16] "   .Internal(C_tryCatchHelper(addr, 1L, cond)), \"object 'pred_stack' not found\", "
+[17] "       base::quote(plot(pred_stack)))"                                              
+[18] "1: plot(pred_stack)"                                                                
+
+NOTE: Log Print Time:  2022-05-11 20:30:35 
+NOTE: Elapsed Time: 10.0765685637792 mins 
+
+Error: object 'pred_stack' not found
+ 
+Traceback: 
+ [1] "3: evalVis(expr)"                                                        
+ [2] "2: capture.output(traceback(5, max.lines = 1000))"                       
+ [3] "1: (function () "                                                        
+ [4] "   {"                                                                    
+ [5] "       er <- geterrmessage()"                                            
+ [6] "       tb <- capture.output(traceback(5, max.lines = 1000))"             
+ [7] "       log_print(er, hide_notes = TRUE, blank_after = FALSE)"            
+ [8] "       log_print(\"Traceback:\", hide_notes = TRUE, blank_after = FALSE)"
+ [9] "       log_print(tb)"                                                    
+[10] "       log_quiet(er, msg = TRUE, blank_after = FALSE)"                   
+[11] "       log_quiet(\"Traceback:\", msg = TRUE, blank_after = FALSE)"       
+[12] "       log_quiet(tb, msg = TRUE)"                                        
+[13] "   })()"                                                                 
+
+NOTE: Log Print Time:  2022-05-11 20:31:01 
+NOTE: Elapsed Time: 25.4796555042267 secs 
+
