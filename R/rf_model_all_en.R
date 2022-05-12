@@ -126,10 +126,11 @@ ps <- lapply(models_year2, function(x) {
 
 # count how many times variables appeared across the 4 sets. Keep those in 2 or
 # more
+
 brk <- 0.01
 keep_nmsl <- lapply(1:length(models_year2), function(x) {
   keep_nms <- models_year2[[x]]$imp_table %>%
-    filter(AccDec <= brk) %>%
+    filter(AccDec >= brk) %>%
     select(name) %>%
     mutate(set = 1)
 }) %>% do.call(rbind, .)
@@ -186,7 +187,7 @@ ejura_tain_rfmodel_2021 <- list(
   "keepnames" = keep_nms
 )
 
-mod_out <- "/data/ejura_tain_rfmodel_2021.rda"
+mod_out <- "/data/ejura_tain_rfmodel_2021_1.rda"
 save(ejura_tain_rfmodel_2021, file = mod_out)
 
 

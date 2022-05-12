@@ -1,25 +1,4 @@
-[1] "Error in h(simpleError(msg, call)) : \n  error in evaluating the argument 'x' in selecting a method for function 'plot': object 'pred_stack' not found\n"
-Traceback: 
- [1] "6: evalVis(expr)"                                                                   
- [2] "5: capture.output(traceback(5, max.lines = 1000))"                                  
- [3] "4: (function () "                                                                   
- [4] "   {"                                                                               
- [5] "       er <- geterrmessage()"                                                       
- [6] "       tb <- capture.output(traceback(5, max.lines = 1000))"                        
- [7] "       log_print(er, hide_notes = TRUE, blank_after = FALSE)"                       
- [8] "       log_print(\"Traceback:\", hide_notes = TRUE, blank_after = FALSE)"           
- [9] "       log_print(tb)"                                                               
-[10] "       log_quiet(er, msg = TRUE, blank_after = FALSE)"                              
-[11] "       log_quiet(\"Traceback:\", msg = TRUE, blank_after = FALSE)"                  
-[12] "       log_quiet(tb, msg = TRUE)"                                                   
-[13] "   })()"                                                                            
-[14] "3: h(simpleError(msg, call))"                                                       
-[15] "2: .handleSimpleError(function (cond) "                                             
-[16] "   .Internal(C_tryCatchHelper(addr, 1L, cond)), \"object 'pred_stack' not found\", "
-[17] "       base::quote(plot(pred_stack)))"                                              
-[18] "1: plot(pred_stack)"                                                                
-
-Error: object 'pred_stack' not found
+Error: object 'train_ref_mu' not found
  
 Traceback: 
  [1] "3: evalVis(expr)"                                                        

@@ -33,19 +33,18 @@ ref_crops_maize_synthetic <- st_read(
 ref_crops_updated <- ref_crops %>%
   mutate(synthetic = 0)
 
-ref_crops_updated %>% View()
+# ref_crops_updated %>% View()
 
 ref_crops_maize_synthetic$id <- seq.int(3358, (3357 + nrow(ref_crops_maize_synthetic)))
 
 ref_crops_synthetic_updated <- ref_crops_maize_synthetic %>%
   mutate(synthetic = 1)
 
-ref_crops_synthetic_updated %>% View()
 
 ref_crops_final_set <- bind_rows(ref_crops_updated, ref_crops_synthetic_updated)
 
 # 3407 rows
-ref_crops_final_set %>% View()
+# ref_crops_final_set %>% View()
 
 # ref_crops_final_set <- do.call(rbind, lapply(1:nrow(ref_crops_final_set), function(n) {
 #    n <- 1
@@ -185,5 +184,5 @@ parse_dt <- function(tile_each) {
 # message('Create the Training Datasest......')
 #dataset <- lapply(unique(ref_crops$tile), possibly(parse_dt, otherwise = NULL))
 
-dataset <- lapply(unique(ref_crops_final_set$bmap_tile)[41:96], parse_dt)
+dataset <- lapply(unique(ref_crops_final_set$bmap_tile)[1], parse_dt)
 

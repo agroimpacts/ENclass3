@@ -1,5 +1,5 @@
 ---
-title: "overview"
+title: "Overview"
 author: "Sai Vishal Muda, Yaoting Yao and Zeyu Zhang"
 date: "2022-4-18"
 output: rmarkdown::html_vignette
@@ -15,47 +15,36 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+  
 
-```{r setup}
-library(ENclass3)
-```
-
-'ENclass3' is the package for Geospatial Analysis with R final project. In this package, we will create Class 3 labels, identify the highest likelihood predictions and Update the Random Forests’ model in Ejura-Tain and Northern Ghana region.
+## 'ENclass3' is the package for the final project for Geospatial Analysis with R. In this package, we will run Random Forest model to get the predictions for different crop fields (maize, rice, other, non-crop) in Ejura-Tain region of Central Ghana.
 
 # 1. Summary: 
 
-#    This project is a subproject from Enabling Crop Analytics at Scale project which aim to improve and expand crop type mapping by updating the approach used for training and testing the Random Forests-based mapping. In our project, we develop a third class of synthetic labels based on predictions from an initial version of Random Forests. After initial training of the model with a training sample consisting of Class 1  labels(crop type polygons collected in fields) and Class 2 labels(crop type polygons classified in UAS imagery), we will assess model performance against the reserved validation sample, and then apply the trained model to map class probabilities across the expanded mapping region. For each crop, we will identify contiguous clusters of pixels where the predicted probabilities exceed 0.7 or the upper 90% percentile probability value, and convert these into new training labels, providing a third class of labels. We will then test whether adding batches (by decreasing order of confidence) of these Class 3 labels to the initial training pool improves model performance. We will retain the subset of Class 3 labels that lead to the largest gains.
+##    This project is related to the ongoing research for Enabling Crop Analytics at Scale which aims to improve and expand crop type mapping. In this project, we added class3(synthetic) labels for maize based on predictions from previous results of Random Forest model to improve the accuracy of the model. After initial training of the model with a training sample consisting of Class 1  labels(crop type polygons collected in fields) and Class 3 labels(crop type polygons from previous prediction results), we will assess model performance against the reserved validation sample, and then apply the trained model to map class probabilities across the entire region.
 
-#     We will work on the following steps to develop Class 3 labels:
+## Following are the steps to identify cropland probabilities
 
-##   (1) Complete the image time series:Collecting the missing Sentinel-1 and 2 data from January to December 2021, and PlanetScope basemap imagery from the same imagery
+##   (1) Gather planetscope imagery for the time period starting from February 2021 to November 2021
 
-##   (2) (Re)train the Random Forests’ model with Class 1 labels and run predictions: 
+##   (2) Gather sentinel 1 harmonic regression output for the same time period
 
-###   Extract predictor values: We create predictor stacks by combing class 1 (sghana_field.geojson) and class 3 label of Maize. Retrain the model and extract the predict value from Raster under each polygon for 2021 data. (process_train_ref_set_y2.R)
+##   (3) Gather sentinel 2 cloud free composites for two different seasons
 
-###   Process training and reference data set: Create folder set predicter and extract value from sentinel 2 data. Calculate predictor for Maize. Produce a csv for all predictor. (process_train_ref_set_y2.R)
+##   (4) Generate dataset for the Random forest model by combining Class 1 labels(sghana_field.geojson) and class 3 labels of Maize.
 
-###   Train model: We use year 2 model to train and evaluate. Break at 0.01 decrease in accuracy. Count how many times variables appeared across the 4 sets. Final model will be just one of these four datasets. Reduced model performs better. (rf_model_all.R)
+##  (5) Calculate various indices using sentinel 2 data and update the dataset with those variables.
 
-###   Predict: Run predictions for one tile in 2021 to see if accuracy of prediction improve. 
+##  (6) Calculate weighted means for dataset for each crop type and update the  dataset with those variables and finally split the dataset into training and test subsets.
+
+##  (7) Train the Random Forest model 4 times by randomly sampling from the training dataset. Filter the variables from the variable importance plot with mean decrease in accuracy less than 0.01 from the results of four models. Identify the variables which occurred more than once and then run Random Forest again with the reduced set of variables.
+
+## (8) Measure the accuracy of the model by evaluating the predictions against the test data that was created earlier.
+
+##  (9) Run predictions for one tile to generate a map of cropland probabilities for each crop (maize, rice, other, noncrop) 
 
 # 2. Data:
 
-#    We use Sentinel 1, Sentinel 2, and PlanetScope time series imagery to develop Class 3 labels within Ejura-Tain and Northern Ghana regions. 
-
-##   Ejura-Tain: Collecting the missing Sentinel-1 and 2 data from January to December 2021, and PlanetScope basemap imagery from the same imagery
-
-##   Northern Ghana: Collecting January-December, 2021 imagery. 
-
-
-# 3. Code
-
-## Create predictor stacks (Vishal)
-## Extract predictor values (Zeyu and Vishal)
-## Process training and reference data set (Yao-Ting)
-## Train model (Zeyu and Yao-Ting)
-## Predict  (Zeyu and Yao-Ting)
-
+##    We used preprocessed level3 imagery of Sentinel 1 and Sentinel 2. PlanetScope basemap imagery for the region to be imported as variables into the model. 
 
 

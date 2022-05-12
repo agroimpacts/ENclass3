@@ -349,7 +349,6 @@ s2_catalog <- unlist(keys) %>% data.frame(path = .) %>%
   ) %>% mutate(s3_path = paste0('/vsis3/activemapper/',path))
 s2_catalog <- s2_catalog[!(is.na(s2_catalog$tile)), ]
 
-s2_catalog %>% View()
 # create S1, S2, and Planet stack
 s3_fpth <- glue('{s3path}/rststack_', tile_each,'.tif')
 s3_status <- aws.s3::head_object(s3_fpth, bucket = bucket)

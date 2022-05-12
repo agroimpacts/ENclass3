@@ -25,7 +25,7 @@ s3prefix_out <- "ecaas_2021/prob_tiles/2021"
 logf <- "/home/rstudio/projects/ENclass3/extdata/rfl_2021_2"
 
 # make sure package is built first!
-load("/data/ejura_tain_rfmodel_2021.rda")
+load("/data/ejura_tain_rfmodel_2021_1.rda")
 predvars <- ejura_tain_rfmodel_2021$keepnames
 mod <- ejura_tain_rfmodel_2021$model_red
 ######
@@ -180,3 +180,5 @@ o <- mclapply(ttiles, function(tile_each) {
 msg <- glue("Completed predictions on tiles at {Sys.time()}")
 cat(msg, file = logf, sep = "\n", append = TRUE)
 message(msg)
+
+
