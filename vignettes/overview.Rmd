@@ -17,34 +17,32 @@ knitr::opts_chunk$set(
 ```
   
 
-## 'ENclass3' is the package for the final project for Geospatial Analysis with R. In this package, we will run Random Forest model to get the predictions for different crop fields (maize, rice, other, non-crop) in Ejura-Tain region of Central Ghana.
+    'ENclass3' is the package for the final project for Geospatial Analysis with R. In this package, we will run Random Forest model to get the predictions for different crop fields (maize, rice, other, non-crop) in Ejura-Tain region of Central Ghana.
 
 # 1. Summary: 
 
-##    This project is related to the ongoing research for Enabling Crop Analytics at Scale which aims to improve and expand crop type mapping. In this project, we added class3(synthetic) labels for maize based on predictions from previous results of Random Forest model to improve the accuracy of the model. After initial training of the model with a training sample consisting of Class 1  labels(crop type polygons collected in fields) and Class 3 labels(crop type polygons from previous prediction results), we will assess model performance against the reserved validation sample, and then apply the trained model to map class probabilities across the entire region.
+    This project is related to the ongoing research for Enabling Crop Analytics at Scale which aims to improve and expand crop type mapping. In this project, we added class3(synthetic) labels for maize based on predictions from previous results of Random Forest model to improve the accuracy of the model. After initial training of the model with a training sample consisting of Class 1  labels(crop type polygons collected in fields) and Class 3 labels(crop type polygons from previous prediction results), we will assess model performance against the reserved validation sample, and then apply the trained model to map class probabilities across the entire region.
 
-## Following are the steps to identify cropland probabilities
+    Following are the steps to identify cropland probabilities
 
-##   (1) Gather planetscope imagery for the time period starting from February 2021 to November 2021
+    (1) Gather planetscope imagery for the time period starting from February 2021 to November 2021
 
-##   (2) Gather sentinel 1 harmonic regression output for the same time period
+    (2) Gather sentinel 1 harmonic regression output for the same time period
 
-##   (3) Gather sentinel 2 cloud free composites for two different seasons
+    (3) Gather sentinel 2 cloud free composites for two different seasons
 
-##   (4) Generate dataset for the Random forest model by combining Class 1 labels(sghana_field.geojson) and class 3 labels of Maize.
+    (4) Generate dataset for the Random forest model by combining Class 1 labels(sghana_field.geojson) and class 3 labels of Maize.
 
-##  (5) Calculate various indices using sentinel 2 data and update the dataset with those variables.
+    (5) Calculate various indices using sentinel 2 data and update the dataset with those variables.
 
-##  (6) Calculate weighted means for dataset for each crop type and update the  dataset with those variables and finally split the dataset into training and test subsets.
+    (6) Calculate weighted means for dataset for each crop type and update the  dataset with those variables and finally split the dataset into training and test subsets.
 
-##  (7) Train the Random Forest model 4 times by randomly sampling from the training dataset. Filter the variables from the variable importance plot with mean decrease in accuracy less than 0.01 from the results of four models. Identify the variables which occurred more than once and then run Random Forest again with the reduced set of variables.
+    (7) Train the Random Forest model 4 times by randomly sampling from the training dataset. Filter the variables from the variable importance plot with mean decrease in accuracy less than 0.01 from the results of four models. Identify the variables which occurred more than once and then run Random Forest again with the reduced set of variables.
 
-## (8) Measure the accuracy of the model by evaluating the predictions against the test data that was created earlier.
+    (8) Measure the accuracy of the model by evaluating the predictions against the test data that was created earlier.
 
-##  (9) Run predictions for one tile to generate a map of cropland probabilities for each crop (maize, rice, other, noncrop) 
+    (9) Run predictions for one tile to generate a map of cropland probabilities for each crop (maize, rice, other, noncrop) 
 
 # 2. Data:
 
-##    We used preprocessed level3 imagery of Sentinel 1 and Sentinel 2. PlanetScope basemap imagery for the region to be imported as variables into the model. 
-
-
+    We used preprocessed level3 imagery of Sentinel 1 and Sentinel 2. PlanetScope basemap imagery for the region to be imported as variables into the model. 
