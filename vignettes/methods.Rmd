@@ -24,8 +24,7 @@ knitr::include_graphics("images/sentinel1_tiles.png")
 
     Performing wasp operation over the entire time series of Sentinel2 images will generate cloud free composites for two different seasons. Following bands from Sentinel2 for two seasons will be used as variables in RF model
 
-"B2","B3","B4","B8" "B5","B6","B7","B8A","B11","B12"
-
+    "B2","B3","B4","B8" "B5","B6","B7","B8A","B11","B12"
 
 ```{r, echo=FALSE, eval=TRUE, out.width="70%", fig.align="center"}
 knitr::include_graphics("images/sentinel2_tiles.png")

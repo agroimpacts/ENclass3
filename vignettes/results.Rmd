@@ -19,10 +19,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
     The accurary of the random forest model was measured using validation data and below are the results when all variables are included.
 
-for seed = 10, accuracy = 0.765
-for seed = 20, accuracy = 0.742
-for seed = 30, accuracy = 0.755
-for seed = 40, accuracy = 0.761
+# for seed = 10, accuracy = 0.765
+# for seed = 20, accuracy = 0.742
+# for seed = 30, accuracy = 0.755
+# for seed = 40, accuracy = 0.761
 
     Below is the Variable Importance plot with all the variables and is for the model that was run with seed set to 10 for random sampling.
 
