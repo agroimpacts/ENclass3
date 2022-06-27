@@ -26,44 +26,44 @@ ref_crops <- st_read(
   "~/projects/class1_labels/sghana_field.geojson"
 )
 
-ref_crops_maize_synthetic <- st_read(
-  "~/projects/class3_labels/maize.geojson"
+#ref_crops %>% View()
+#ref_crops %>% filter(class == "noncrop") %>% View()
+
+ref_crops_synthetic <- st_read(
+  "~/projects/class3_labels/class3_field.geojson"
 )
 
-ref_crops_updated <- ref_crops %>%
-  mutate(synthetic = 0)
+ref_crops_synthetic$id <- seq.int(1000, (999 + nrow(ref_crops_synthetic)))
+ref_crops$id <- seq.int(5000, 4999 + nrow(ref_crops))
 
-# ref_crops_updated %>% View()
+#ref_crops_synthetic %>% View()
+ref_crops <- ref_crops %>% mutate(synthetic = 0) %>% st_transform(st_crs(ref_crops_synthetic))
+ref_crops_synthetic <- ref_crops_synthetic %>% mutate(synthetic = 1)
 
-ref_crops_maize_synthetic$id <- seq.int(3358, (3357 + nrow(ref_crops_maize_synthetic)))
-
-ref_crops_synthetic_updated <- ref_crops_maize_synthetic %>%
-  mutate(synthetic = 1)
+ref_crops_final <- bind_rows(ref_crops, ref_crops_synthetic)
 
 
-ref_crops_final_set <- bind_rows(ref_crops_updated, ref_crops_synthetic_updated)
+# 4318 rows
+ref_crops_final %>% View()
 
-# 3407 rows
-# ref_crops_final_set %>% View()
-
-# ref_crops_final_set <- do.call(rbind, lapply(1:nrow(ref_crops_final_set), function(n) {
-#    n <- 1
-#   ref_crop <- ref_crops_final_set[n, ]
-#   tiles <- ref_crop$bmap_tile %>% str_split(.,';') %>% unlist()
-#   # ref_crop$tile <- tiles[1]
-#   ref_crop %>% slice(rep(1:n(), each = length(tiles))) %>%
-#     mutate(tile=tiles[row_number()])
-# }))
+ref_crops_final <- do.call(rbind, lapply(1:nrow(ref_crops_final), function(n) {
+  # n <- 1
+  ref_crop <- ref_crops_final[n, ]
+  tiles <- ref_crop$bmap_tile %>% str_split(.,';') %>% unlist()
+  # ref_crop$tile <- tiles[1]
+  ref_crop %>% slice(rep(1:n(), each = length(tiles))) %>%
+    mutate(tile=tiles[row_number()])
+}))
 
 # all the row have only one tile
 # ref_crops_final_set %>% mutate(tilelength =
 #                                  nchar(ref_crops_final_set$bmap_tile) ) %>%
 #   View()
 
-#ref_crops$id <- seq.int(5000, (4999 + nrow(ref_crops)))
+#ref_crops_final$id <- seq.int(5000, (4999 + nrow(ref_crops_final)))
 
 bucket <- 'activemapper'
-s3path <- 'ecaas_2021/RasterStack_All'
+s3path <- 'ecaas_2021/RasterStack_All_EN'
 
 # stat <- sapply(ref_crops_tiles$tile[1:105], function(x){
 #   aws.s3::head_object(glue('{s3path}/rststack_',x,'.tif'), bucket = bucket)})
@@ -73,13 +73,13 @@ s3path <- 'ecaas_2021/RasterStack_All'
 # Read in raster stack from S3
 parse_dt <- function(tile_each) {
   message(paste0('Processing tile: ', tile_each))
-   #tile_each <- '1013-1066'
+   #tile_each <- '1015-1063'
   # f <- paste0(
   #   "/home/ubuntu/cscdc/data/results_dataset2/tile_", tile_each, '_dataset.csv'
   # )  # file name--note I pointed it to a new folder
 
   f <- paste0(
-    "/home/rstudio/projects/data/extract/tile_",
+    "/data/extract_new2/tile_",
     tile_each,
     '_dataset.csv'
   )  # file name--note I pointed it to a new folder
@@ -95,8 +95,7 @@ parse_dt <- function(tile_each) {
 
     #rst_stack <- terra::rast(raster::stack(rst_stack_s3pth) * 1)
     message(glue('Reading raster stack {tile_each} ...'))
-    rst_stk <- raster::readAll(raster::brick(rst_stack_s3pth))
-    rst_stack <- terra::rast(rst_stk)
+    rst_stack <-  terra::rast(raster::readAll(raster::brick(rst_stack_s3pth)))
 
 
     #rst_stack <- terra::rast(raster::brick(rst_stack_s3pth))
@@ -112,7 +111,7 @@ parse_dt <- function(tile_each) {
     # same zone, and then cropping). It doesn't crop exactly to the edge
     # (a little) larger, but at least it should allow collection from adjacent
     # tiles
-    ref_crops_utm <- ref_crops %>%
+    ref_crops_utm <- ref_crops_final %>%
       st_transform(., crs(rst_stack)) %>% #, proj4 = TRUE
       vect(.)
     crops <- terra::crop(ref_crops_utm, rst_stack)
@@ -181,8 +180,9 @@ parse_dt <- function(tile_each) {
   }
 }
 
+
 # message('Create the Training Datasest......')
 #dataset <- lapply(unique(ref_crops$tile), possibly(parse_dt, otherwise = NULL))
 
-dataset <- lapply(unique(ref_crops_final_set$bmap_tile)[1], parse_dt)
+dataset <- lapply(unique(ref_crops_final$tile)[51:102], parse_dt)
 

@@ -8,6 +8,7 @@ library(dplyr)
 library(aws.s3)
 library(ggplot2)
 library(patchwork)
+library(glue)
 
 
 #read in train set on s3
@@ -17,14 +18,13 @@ library(patchwork)
 # dataset
 
 
-train_ref <- readr::read_csv("/home/rstudio/projects/data/train/train_reference_v2.csv") %>%
+train_ref <- readr::read_csv("/data/train/train_reference_v3.csv") %>%
   mutate(crop = factor(case_when(
   class == "Maize" ~ 1,
   class == "Rice" ~ 2,
   class == "Other" ~ 3,
   class == "noncrop" ~ 4
 ))) %>% select(id, class, crop, !!names(.))
-
 
 #------------------------------------------------------------------------------#
 # Year 2 only model
@@ -53,13 +53,13 @@ train_ref_y2l <- lapply(c(10, 20, 30, 40), function(x) {
   ) %>% mutate(seed_y2 = x)
 }) %>% do.call(rbind, .)
 
-# train_refl_y2l %>% group_by(usage, class, seed_y2) %>% count() %>%
+# train_ref_y2l %>% group_by(usage, class, seed_y2) %>% count() %>%
 #   arrange(seed_y2) %>% View()
 
 # checking not all in--they aren't
-# all((train_refl_y2l %>% filter(class == "Rice" & seed_y2 == 10) %>% pull(id)) %in%
-#   (train_refl_y2l %>% filter(class == "Rice" & seed_y2 == 20) %>% pull(id)))
-# train_refl_y2l %>% filter(class == "Maize" & usage == "test") %>% View()
+# all((train_ref_y2l %>% filter(class == "Rice" & seed_y2 == 10) %>% pull(id)) %in%
+#   (train_ref_y2l %>% filter(class == "Rice" & seed_y2 == 20) %>% pull(id)))
+# train_ref_y2l %>% filter(class == "Maize" & usage == "test") %>% View()
 
 # Split data
 colnames(train_ref_y2l)
@@ -67,10 +67,10 @@ models_year2 <- lapply(c(10, 20, 30, 40), function(x) {  # x <- 10
 
   train <- train_ref_y2l %>%
     filter(seed_y2 == x & usage == "train") %>%
-    select(-id, -class, -seed, -weight, -usage, -seed_y2, -type)
+    select(-id, -class, -seed, -weight, -usage, -seed_y2)
   test <- train_ref_y2l %>%
     filter(seed_y2 == x & usage == "test") %>%
-    select(-id, -class, -seed, -weight, -usage, -seed_y2, -type)
+    select(-id, -class, -seed, -weight, -usage, -seed_y2)
 #models_year2 <- lapply(c(10, 20, 30, 40), function(x) {  # x <- 10
 
 #  train <- train_ref_y2l %>%
@@ -127,7 +127,7 @@ ps <- lapply(models_year2, function(x) {
 # count how many times variables appeared across the 4 sets. Keep those in 2 or
 # more
 
-brk <- 0.01
+brk <- 0.005
 keep_nmsl <- lapply(1:length(models_year2), function(x) {
   keep_nms <- models_year2[[x]]$imp_table %>%
     filter(AccDec >= brk) %>%
@@ -140,7 +140,7 @@ keep_nms <- keep_nmsl %>% group_by(name) %>% count() %>%
 # final model will be just one of these four datasets, using the keep names
 set.seed(1)
 dset <- train_ref_y2l %>%
-  filter(seed_y2 == sample(c(10, 20, 30, 40), 1)) %>%
+  filter(seed_y2 == 10) %>%
   select(-class, -seed, -weight) %>%
   select(id, crop, !!keep_nms, usage)#, seed_y2)
 # unique(dset$seed_y2)  # 10
@@ -179,7 +179,7 @@ p <- ggplot(imp_tblr) +
         axis.title = element_text(size = 7))
 
 
-ejura_tain_rfmodel_2021 <- list(
+ejura_tain_rfmodel_class3_2021 <- list(
   "model" = models_year2$`10`$model,
   "cmatrix" = models_year2$`10`$cm,
   "imp_table" = models_year2$`10`$imp_tbl,
@@ -187,8 +187,8 @@ ejura_tain_rfmodel_2021 <- list(
   "keepnames" = keep_nms
 )
 
-mod_out <- "/data/ejura_tain_rfmodel_2021_1.rda"
-save(ejura_tain_rfmodel_2021, file = mod_out)
+mod_out <- "/data/ejura_tain_rfmodel_class3_2021.rda"
+save(ejura_tain_rfmodel_class3_2021, file = mod_out)
 
 
 

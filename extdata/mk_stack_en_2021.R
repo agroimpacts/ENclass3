@@ -66,10 +66,10 @@ s1_catalog <- s1_catalog[-c(1), ]
 
 # Make sentinel2 from individual band to band groups (B2348, B5678A1112)
 # for each season meanwhile maintains the original sentinel tile at the moment.
-# s2_tile <- c("NWN", "NWP", "NXN", "NXP",
-#              "NYN", "NYP", "PWQ", "PWR",
-#              "PXQ", "PYQ")  # check these tiles not all intersect
-s2_tile <- c("NWP", "NXN", "NXP", "NYN", "NYP", "PWQ", "PXQ")
+s2_tile <- c("NWN", "NWP", "NXN", "NXP",
+              "NYN", "NYP", "PWQ", "PWR",
+              "PXQ", "PYQ")  # check these tiles not all intersect
+#s2_tile <- c("NWP", "NXN", "NXP", "NYN", "NYP", "PWQ", "PXQ")
 s2_midday <- c('0617', '1216')
 s2_bandgrp1 <- c("B2", "B3", "B4", "B8")
 s2_bandgrp2 <- c("B5", "B6","B7", "B8A","B11", "B12")
@@ -104,8 +104,8 @@ s2_catalog <- s2_catalog %>%
 season_list <- c("s1", "s2")
 
 # crop sentinel 2 tiles by entire nicfi area to reduce tif size
-nicfi <- st_read(glue('/home/ubuntu/projects/geoms/',
-                      'bry_ecaas.geojson'))
+nicfi <- st_read(glue('/home/rstudio/projects/geoms/',
+                      'nicfi_dissolved.geojson'))
 # plot(nicfi$geometry)
 
 # check intersections
@@ -126,9 +126,9 @@ nicfi <- st_read(glue('/home/ubuntu/projects/geoms/',
 #     st_intersection(nicfi_newcrs)
 #   return(new_tile_bound)
 # }))
-# plot(int_check)
+# plot(int_check[10,])
 
-lapply(s2_tile, function(this_tile) { # this_tile <- s2_tile[7]
+lapply(s2_tile[10], function(this_tile) { # this_tile <- s2_tile[7]
 # lapply(s2_tile[7:10], function(this_tile) {
   message("working on tile: ", this_tile)
 
@@ -159,24 +159,21 @@ lapply(s2_tile, function(this_tile) { # this_tile <- s2_tile[7]
       st_set_crs(raster::crs(B2348)) %>%
       st_intersection(nicfi_newcrs)
 
-     plot(nicfi_newcrs$geometry)
-     plot(new_tile_bound$geometry, add = TRUE, col = "red")
+     #plot(nicfi_newcrs$geometry)
+     #plot(new_tile_bound$geometry, add = TRUE, col = "red")
     # raster::extent(B2348) %>% as('SpatialPolygons') %>%
     #   st_as_sf() %>% st_geometry %>% plot(add = TRUE)
 
-    message("intersection success")
-
-    message("writing raster B2348 for season: ", this_season)
-    fnm <- glue("/data/",
-                "Stack_S2_2021/Sentinel2_{this_tile}_B2348_{this_season}.tif")
     B2348 <- raster::crop(B2348, new_tile_bound)
     # B2348 <- terra::crop(B2348, new_tile_bound)
     #plot(B2348)
 
-    message("cropping success")
-    #fnm <- glue("/data/",
-           #     "Stack_S2_2021/Sentinel2_{this_tile}_B2348_{this_season}.tif")
-    raster::writeRaster(B2348, filename = fnm, overwrite=TRUE)
+    message("writing raster B2348 for season: ", this_season)
+
+    fnm <- glue("/data/",
+               "Stack_S2_2021/Sentinel2_{this_tile}_B2348_{this_season}.tif")
+    raster::writeRaster(B2348, filename = fnm)
+
 
     # make B5678A111 file for a season
     B5678A1112_path <- s2_catalog %>%
@@ -255,10 +252,10 @@ ref_crops_tiles <- st_read(
 season_list <- c("s1","s2")
 band_grp_list <- c("B2348", "B5678A1112")
 
-lapply(ref_crops_tiles$tile[91:105], function(this_tile) { #this_tile <- '1008-1066'
+lapply(ref_crops_tiles$tile[51:105], function(this_tile) { #this_tile <- '1008-1075'
   message("working on tile: ", this_tile)
-  lapply(band_grp_list, function(this_grp) {
-    lapply(season_list, function(this_season) {
+  lapply(band_grp_list, function(this_grp) {  #this_grp <- "B2348"
+    lapply(season_list, function(this_season) { #this_season <- "s1"
 
       # pull all sentinel tiles (images)
       sentinel_list <- s2_catalog %>%
@@ -268,6 +265,7 @@ lapply(ref_crops_tiles$tile[91:105], function(this_tile) { #this_tile <- '1008-1
       # use tile to cut each sentinel 2 tiles (images)
       # if not intersect, return null
       tile_chips <- lapply(sentinel_list, function(this_file){
+        #this_file <- "/vsis3/activemapper/ecaas_2021/Sentinel2_Stack_EN/Sentinel2_PWQ_B2348_s1.tif"
         r <- raster::stack(this_file)
         r_bbox <- as(raster::extent(r), "SpatialPolygons") %>%
           st_as_sf() %>%
@@ -277,6 +275,11 @@ lapply(ref_crops_tiles$tile[91:105], function(this_tile) { #this_tile <- '1008-1
           filter(tile == this_tile) %>%
           st_as_sf() %>%
           st_transform(crs = raster::crs(r))
+
+        #plot(r_bbox)
+
+       # ggplot() + geom_sf(data = nicfi_tile) +
+        #  geom_sf(data = r_bbox)
 
         check_intersect <- st_intersects(nicfi_tile, r_bbox)
 
@@ -316,7 +319,7 @@ lapply(ref_crops_tiles$tile[91:105], function(this_tile) { #this_tile <- '1008-1
 
 # push sentinel2_nicfi to s3
 s2_stack_list <- list.files(
-  glue('/home/rstudio/projects/ecaascrops/external/data/Stack_S2_2021/')
+  glue('/data/Stack_S2_Nicfi_2021/')
 )
 cmd <- glue(
   'aws s3 cp ',
@@ -354,8 +357,8 @@ s3_fpth <- glue('{s3path}/rststack_', tile_each,'.tif')
 s3_status <- aws.s3::head_object(s3_fpth, bucket = bucket)
 
 
-lapply(ref_crops_tiles$tile[1], function(tile_each) {
-   tile_each <- '1008-1075'
+lapply(ref_crops_tiles$tile[51:105], function(tile_each) {
+  # tile_each <- '1008-1075'
 
   message(paste0('Generating raster stack for tile : ', tile_each))
 
@@ -367,7 +370,7 @@ lapply(ref_crops_tiles$tile[1], function(tile_each) {
     lapply(s2_syntheses_10m$s3_path, function(each) {
       #each = "/vsis3/activemapper/ecaas_2021/Sentinel2_Nicfi_EN/Sentinel2_1008-1075_B2348_s1.tif"
       rst <- terra::rast(raster::stack(each))
-      plot(rst)
+      #plot(rst)
     })
   )
 
@@ -380,7 +383,7 @@ lapply(ref_crops_tiles$tile[1], function(tile_each) {
     resample(rst, s2_syntheses_10m[[1]])
   }))
   s2_syntheses
-  plot(s2_syntheses)
+  #plot(s2_syntheses)
   names(s2_syntheses) <- c(
     "B2_1", "B3_1", "B4_1", "B8_1",
     "B2_2", "B3_2", "B4_2", "B8_2",
@@ -393,7 +396,7 @@ lapply(ref_crops_tiles$tile[1], function(tile_each) {
   planet <- do.call(c, lapply(planet$s3_path, function(each) {
     each <- planet$s3_path[1]
     rst <- terra::rast(raster::stack(each))[[1:4]]
-    plot(rst)
+    #plot(rst)
     terra::resample(rst,s2_syntheses_10m[[1]])
   }))
   names(planet) <- c(
@@ -432,5 +435,7 @@ lapply(ref_crops_tiles$tile[1], function(tile_each) {
   #   "s3://{bucket}/{s3path}/rststack_{tile_each}.tif"
   # )
   # system(cmd)
-})
   # Rem
+  rm(rst_stack)
+  gc()
+})

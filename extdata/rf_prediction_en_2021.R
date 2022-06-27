@@ -12,33 +12,36 @@ library(logr)
 
 # Read in tile list and model
 
-load("train_predict_tiles.rda")
-ttile <- train_predict_tiles %>% pull(bmap_tile)
+# nicfi tiles for entire EN area
+ref_crops_tiles <- st_read(glue('/home/ubuntu/projects/geoms/',
+                                'tiles_nicfi.geojson'))
+ttile <- ref_crops_tiles %>% pull(tile)
+
 
 ###### change these variables
-local_dir <- ("/home/rstudio/projects/ENclass3/extdata/")
+local_dir <- ("/data/probs/")
 completed <- gsub("probs_|.tif", "", dir(local_dir))
-ttiles <- ttile[!ttile %in% completed]
-bucket <- "activemapper"
-s3path <- 'ecaas_2021/RasterStack_All'
-s3prefix_out <- "ecaas_2021/prob_tiles/2021"
-logf <- "/home/rstudio/projects/ENclass3/extdata/rfl_2021_2"
+ttiles <<- ttile[!ttile %in% completed]
+bucket <<- "activemapper"
+s3path <<- 'ecaas_2021/RasterStack_All_EN'
+s3prefix_out <<- "ecaas_2021/prob_tiles_EN/2021"
+logf <- "/data/logs/rfl_2021"
 
 # make sure package is built first!
-load("/data/ejura_tain_rfmodel_2021_1.rda")
-predvars <- ejura_tain_rfmodel_2021$keepnames
-mod <- ejura_tain_rfmodel_2021$model_red
+load("/data/ejura_tain_rfmodel_2021.rda")
+predvars <<- ejura_tain_rfmodel_2021$keepnames
+mod <<- ejura_tain_rfmodel_2021$model_red
 ######
 
-lf <- logr::log_open(logf)
+lf <<- logr::log_open(logf)
 if(file.exists(logf)) {
   file.copy(logf, paste0(logf, "bak"))
   file.remove(logf)
 }
 
 # NA and Inf counter functions
-na_ct <- function(x) length(which(is.na(x)))
-inf_ct <- function(x) length(which(is.infinite(x)))
+na_ct <<- function(x) length(which(is.na(x)))
+inf_ct <<- function(x) length(which(is.infinite(x)))
 
 
 starttime <- Sys.time()
@@ -47,8 +50,8 @@ cat(msg, file = logf, sep = "\n", append = TRUE)
 message(msg)
 
 
-o <- mclapply(ttiles, function(tile_each) {
-  tile_each <- ttiles[1]
+o <- lapply(ttiles, function(tile_each) {
+    # tile_each <- ttiles[1]
   starttime <- Sys.time()
   msg <- glue("Starting prediction for tile {tile_each} at {starttime}")
   cat(msg, file = logf, sep = "\n", append = TRUE)
@@ -168,16 +171,16 @@ o <- mclapply(ttiles, function(tile_each) {
   gc()
 
 
-#  cmd <- glue("aws s3 cp {f} ",
-#              "s3://{bucket}/{s3prefix_out}/probs_{tile_each}.tif")
-#  system(cmd)
+  cmd <- glue("aws s3 cp {f} ",
+             "s3://{bucket}/{s3prefix_out}/probs_{tile_each}.tif")
+  system(cmd)
 
   msg <- glue("Completed predictions for tile {tile_each} at {Sys.time()}")
   cat(msg, file = logf, sep = "\n", append = TRUE)
   cat("\n", file = logf, append = TRUE)
-}, mc.cores = 6)
+})
 
-msg <- glue("Completed predictions on tiles at {Sys.time()}")
+wamsg <- glue("Completed predictions on tiles at {Sys.time()}")
 cat(msg, file = logf, sep = "\n", append = TRUE)
 message(msg)
 

@@ -7,7 +7,7 @@ library(tidyr)
 library(glue)
 # library(parallel)
 # get data from instance
-dataset <- "/home/rstudio/projects/data/extract/"
+dataset <- "/data/extract_new2/"
 
 dat2 <- lapply(dir(dataset, full.names = TRUE), function(x) {
   readr::read_csv(x) %>%
@@ -96,6 +96,7 @@ datf <- datf %>% drop_na(vh_1)
 # should returns FALSE after fixing
 any(is.na(rowSums(datf %>% select(B2_1:sti_2))))
 
+
 #we have weight
 #colnames(datf)
 
@@ -135,7 +136,7 @@ rice_wmeans <- lapply(seq(30, 120, by = 30), function(x) {  # x <- 1
   datf %>% filter(class == "Rice") %>%
     group_by(id) %>%
     filter(weight > 0.5) %>%
-    sample_n(size = ceiling(n() * 0.1), replace = TRUE) %>%
+    sample_n(size = ceiling(n() * 0.3), replace = TRUE) %>%
     summarize_at(vars(sti_2:weight), weighted.mean, w = quo(weight), mean, na.rm = TRUE) %>%
     mutate(seed = x) %>%
     select(seed, id, !!names(.))
@@ -149,7 +150,7 @@ other_wmeans <- lapply(seq(150, 300, by = 150), function(x) {  # x <- 1
   set.seed(x)
   datf %>% filter(class == "Other") %>%
     group_by(id) %>%
-    sample_n(size = ceiling(n() * 0.05), replace = TRUE) %>%
+    sample_n(size = ceiling(n() * 0.1), replace = TRUE) %>%
     summarize_at(vars(sti_2:weight), weighted.mean, w = quo(weight), mean, na.rm = TRUE) %>%
     mutate(seed = x) %>%
     select(seed, id, !!names(.))
@@ -168,7 +169,7 @@ noncrop_means <- datf %>% filter(class == "noncrop") %>%
   group_by(id) %>%
   summarize_at(vars(B2_1:sti_2), mean, na.rm = TRUE) %>%
   ungroup() %>% mutate(class = "noncrop", seed = NA) %>%
-  sample_n(size = ssize)
+  sample_n(size = ssize, replace = TRUE)
 any(is.na(rowSums(noncrop_means %>% select(B2_1:sti_2))))
 # noncrop_med <- datf %>% filter(class == "noncrop") %>%
 #   group_by(id) %>%
@@ -179,16 +180,23 @@ any(is.na(rowSums(noncrop_means %>% select(B2_1:sti_2))))
 train_ref_mu <- bind_rows(
   maize_wmeans, rice_wmeans, other_wmeans, noncrop_means
 )
+
+train_ref_mu %>% View()
 #we have weight here
-#colnames(train_ref_mu2)
+#colnames(train_ref_mu)
 
 # training/test split
 uniid <- unique(train_ref_mu$id) # unique field ids
+
+# filter only class1 labels to be included in test set
+class1_ids <- uniid[uniid > 4999]
+
+
+
 set.seed(1)
-test_ids <- sample(uniid, size = ceiling(0.2 * length(uniid))) # ids for test
+test_ids <- sample(class1_ids, size = ceiling(0.2 * length(uniid))) # ids for test
 train_test <- tibble(id = uniid) %>%
   mutate(usage = ifelse(id %in% test_ids, "test", "train")) # train/ref ids
-
 
 
 train_ref_mu <- train_ref_mu %>%
@@ -202,20 +210,20 @@ any(train_ref_mu$id[train_ref_mu$usage == "train"] %in%
 
 #colnames(train_ref_mu)
 # add split
-train_ref_mu <- train_ref_mu %>%
-  mutate(type = "mean") %>%
-  select(id, class, type, seed, !!names(.))
+#train_ref_mu <- train_ref_mu %>%
+#  mutate(type = "mean") %>%
+#  select(id, class, type, seed, !!names(.))
 # train_ref_med <- train_ref_med %>%
 #   mutate(type = "median") %>%
 #   select(id, class, type, seed, !!names(.))
 
 any(is.na(rowSums(train_ref_mu %>% select(B2_1:sti_2))))
 
-dat_out <- bind_rows(train_ref_mu, train_ref_med)
-any(is.na(rowSums(dat_out %>% select(B2_1:sti_2))))
+#dat_out <- bind_rows(train_ref_mu, train_ref_med)
+#any(is.na(rowSums(dat_out %>% select(B2_1:sti_2))))
 
 
-readr::write_csv(train_ref_mu, path = "/home/rstudio/projects/data/train/train_reference_v2.csv")
+readr::write_csv(train_ref_mu, path = "/data/train/train_reference_v3.csv")
 
 
 
